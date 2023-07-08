@@ -1,8 +1,11 @@
 from tkinter import *
 from tkinter.ttk import *
-from functools import partial
 from add import store_password
+from search import query_password
 # https://realpython.com/python-gui-tkinter/#building-your-first-python-gui-application-with-tkinter
+
+# NOTE ask users where their password csv is located?
+# https://coderslegacy.com/python/libraries-in-python/python-tkinter-filedialog/
 
 def add_password():
     # Toplevel object as new window
@@ -41,6 +44,47 @@ def add_password():
     # submit button
     Button(add_window, text="Submit", command=submit_add).pack()
 
+def search_password():
+    # Toplevel object as new window
+    search_window = Toplevel(gui)
+
+    # set size of window
+    search_window.geometry("200x200")
+
+    # heading
+    Label(search_window, text="Add Password").pack()
+
+    # website name
+    Label(search_window, text="Website").pack()
+    website_input = Entry(search_window)
+    website_input.pack()
+
+    # username
+    Label(search_window, text="Username").pack()
+    username_input = Entry(search_window)
+    username_input.pack()
+
+    # inner function to send data to be search in the csv
+    def submit_search():
+        password = query_password(website_input.get(), username_input.get())
+
+        # clear inputs in the entry fields
+        website_input.delete(0, END)
+        username_input.delete(0, END)
+
+        # output results
+        if isinstance(password, int) and password == 1:
+            result.config(text="No password CSV file found.")
+        elif isinstance(password, int) and password == 2:
+            result.config(text="No password found.")
+        else:
+            result.config(text=password)
+
+    # submit button
+    Button(search_window, text="Submit", command=submit_search).pack()
+
+    result = Label(search_window, text="")
+    result.pack()
 
 gui = Tk()
 # set size of window
@@ -54,7 +98,7 @@ Label(gui, text="Password Manager").pack()
 Button(gui, text="Add Password", width= 25, command=add_password).pack()
 
 # query password feature
-Button(gui, text="Search For A Password", width=25).pack()
+Button(gui, text="Search For A Password", width=25, command=search_password).pack()
 
 # update a password
 Button(gui, text="Update A Password", width=25).pack()
