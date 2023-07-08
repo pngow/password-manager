@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter.ttk import *
 from add import store_password
 from search import query_password
+from update import replace_password
 # https://realpython.com/python-gui-tkinter/#building-your-first-python-gui-application-with-tkinter
 
 # NOTE ask users where their password csv is located?
@@ -92,8 +93,48 @@ def search_password():
     result = Label(search_window, text="")
     result.pack()
 
-# def update_password():
+def update_password():
+# Toplevel object as new window
+    update_window = Toplevel(gui)
 
+    # set size of window
+    update_window.geometry("200x200")
+
+    # heading
+    Label(update_window, text="Update Password").pack()
+
+    # website name
+    Label(update_window, text="Website").pack()
+    website_input = Entry(update_window)
+    website_input.pack()
+
+    # username
+    Label(update_window, text="Username").pack()
+    username_input = Entry(update_window)
+    username_input.pack()
+
+    # password
+    Label(update_window, text="Password").pack()
+    password_input = Entry(update_window)
+    password_input.pack()
+
+    # inner function to send data to be stored in the csv
+    def submit_add():
+        output = replace_password(website_input.get(), username_input.get(), password_input.get())
+
+        # clear inputs in the entry fields
+        website_input.delete(0, END)
+        username_input.delete(0, END)
+        password_input.delete(0, END)
+
+        if output == 1:
+            result.config(text="Successfully updated.")
+
+    # submit button
+    Button(update_window, text="Submit", command=submit_add).pack()
+
+    result = Label(update_window, text="")
+    result.pack()
 
 gui = Tk()
 # set size of window
@@ -110,7 +151,7 @@ Button(gui, text="Add Password", width= 25, command=add_password).pack()
 Button(gui, text="Search For A Password", width=25, command=search_password).pack()
 
 # update a password
-Button(gui, text="Update A Password", width=25).pack()
+Button(gui, text="Update A Password", width=25, command=update_password).pack()
 
 # run gui
 gui.mainloop()
