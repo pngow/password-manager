@@ -24,3 +24,5 @@ def store_password(website, username, password):
     writer.writerow(entry)
 
     file.close()
+
+    return 1

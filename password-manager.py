@@ -34,15 +34,21 @@ def add_password():
 
     # inner function to send data to be stored in the csv
     def submit_add():
-        store_password(website_input.get(), username_input.get(), password_input.get())
+        output = store_password(website_input.get(), username_input.get(), password_input.get())
 
         # clear inputs in the entry fields
         website_input.delete(0, END)
         username_input.delete(0, END)
         password_input.delete(0, END)
 
+        if output == 1:
+            result.config(text="Successfully added.")
+
     # submit button
     Button(add_window, text="Submit", command=submit_add).pack()
+
+    result = Label(add_window, text="")
+    result.pack()
 
 def search_password():
     # Toplevel object as new window
@@ -85,6 +91,9 @@ def search_password():
 
     result = Label(search_window, text="")
     result.pack()
+
+# def update_password():
+
 
 gui = Tk()
 # set size of window
