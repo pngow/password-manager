@@ -1,18 +1,26 @@
 import constants
 import os
+import csv
 
 def store_password(website, username, password):
     # create file and add header if it doesn't exist
     if not os.path.exists(constants.FILE_NAME):
-        file = open(constants.FILE_NAME, "a+")
-        file.write('website,username,password')
+        file = open(constants.FILE_NAME, "a+", newline='')
+
+        # initialize csv writer
+        writer = csv.writer(file, delimiter=',')
+
+        writer.writerow(['website', 'username', 'password'])
     else:
-        file = open(constants.FILE_NAME, "a+")
+        file = open(constants.FILE_NAME, "a+", newline='')
+
+        # initialize csv writer
+        writer = csv.writer(file, delimiter=',')
 
     # create entry
-    entry = f"\n{website},{username},{password}"
+    entry = [website, username, password]
 
     # write to file
-    file.write(entry)
+    writer.writerow(entry)
 
     file.close()
