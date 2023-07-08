@@ -52,7 +52,7 @@ def search_password():
     search_window.geometry("200x200")
 
     # heading
-    Label(search_window, text="Add Password").pack()
+    Label(search_window, text="Search Password").pack()
 
     # website name
     Label(search_window, text="Website").pack()
