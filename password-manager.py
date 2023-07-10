@@ -1,5 +1,7 @@
 from tkinter import *
+from tkinter import filedialog
 from tkinter.ttk import *
+import os
 from add import store_password
 from search import query_password
 from update import replace_password
@@ -35,15 +37,25 @@ def add_password():
 
     # inner function to send data to be stored in the csv
     def submit_add():
-        output = store_password(website_input.get(), username_input.get(), password_input.get())
+        # set file_path to be the global variable
+        global file_path
+
+        output = store_password(file_path, website_input.get(), username_input.get(), password_input.get())
 
         # clear inputs in the entry fields
         website_input.delete(0, END)
         username_input.delete(0, END)
         password_input.delete(0, END)
 
-        if output == 1:
+        if isinstance(output, int) and output == 1:
             result.config(text="Successfully added.")
+        elif isinstance(output, int) and output == 2:
+            result.config(text="File is not in CSV format.")
+        elif isinstance(output, str) and os.path.isfile(output):
+            result.config(text="File created & written to.")
+
+            # update global file path variable to the new file
+            file_path = output
 
     # submit button
     Button(add_window, text="Submit", command=submit_add).pack()
@@ -73,7 +85,10 @@ def search_password():
 
     # inner function to send data to be search in the csv
     def submit_search():
-        password = query_password(website_input.get(), username_input.get())
+        # set file_path to be the global variable
+        global file_path
+
+        password = query_password(file_path, website_input.get(), username_input.get())
 
         # clear inputs in the entry fields
         website_input.delete(0, END)
@@ -81,10 +96,16 @@ def search_password():
 
         # output results
         if isinstance(password, int) and password == 1:
+            # no file exists
             result.config(text="No password CSV file found.")
         elif isinstance(password, int) and password == 2:
+            # file was not in csv format
+            result.config(text='File not in CSV format.')
+        elif isinstance(password, int) and password == 3:
+            # no password matching the website & username
             result.config(text="No password found.")
-        else:
+        elif isinstance(password, str):
+            # successfully retrieved password for the website & username
             result.config(text=password)
 
     # submit button
@@ -94,7 +115,7 @@ def search_password():
     result.pack()
 
 def update_password():
-# Toplevel object as new window
+    # Toplevel object as new window
     update_window = Toplevel(gui)
 
     # set size of window
@@ -120,15 +141,27 @@ def update_password():
 
     # inner function to send data to be stored in the csv
     def submit_add():
-        output = replace_password(website_input.get(), username_input.get(), password_input.get())
+        # set file_path to be the global variable
+        global file_path
+
+        output = replace_password(file_path, website_input.get(), username_input.get(), password_input.get())
 
         # clear inputs in the entry fields
         website_input.delete(0, END)
         username_input.delete(0, END)
         password_input.delete(0, END)
 
-        if output == 1:
+        if isinstance(output, int) and output == 1:
+            # successfully updated password for the website & username
             result.config(text="Successfully updated.")
+        elif isinstance(output, int) and output == 2:
+            # file was not in csv format
+            result.config(text="File is not in CSV format.")
+        elif isinstance(output, int) and output == 3:
+            # no file exists
+            result.config(text="No password CSV file found.")
+        elif isinstance(output, int) and output == 4:
+            result.config(text='Error.')
 
     # submit button
     Button(update_window, text="Submit", command=submit_add).pack()
@@ -152,6 +185,12 @@ Button(gui, text="Search For A Password", width=25, command=search_password).pac
 
 # update a password
 Button(gui, text="Update A Password", width=25, command=update_password).pack()
+
+# ask users to locate an existing password csv file
+file_path = filedialog.askopenfilename(initialdir='/', title='Select CSV', filetypes=(('CSV files', '*.csv'), ('All files', '*.*')))
+# format when no file selected
+if file_path == "":
+    file_path = None
 
 # run gui
 gui.mainloop()
